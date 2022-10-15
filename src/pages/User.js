@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { Typography } from "@material-tailwind/react";
 import axios from "axios";
@@ -47,9 +47,17 @@ const data = [
 ];
 
 const User = () => {
+  const [foodData, setFoodData] = useState([]);
   useEffect(() => {
     // API call here
-    const foods = axios.get("https://");
+    const getFoods = async () => {
+      const foods = await axios
+        .get("https://team3api.azurewebsites.net/items/?skip=0&limit=100")
+        .then((res) => res.data);
+      setFoodData(foods);
+    };
+
+    getFoods();
   }, []);
 
   return (
@@ -62,9 +70,9 @@ const User = () => {
           List of Free Foods
         </Typography>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 list-decimals p-5 space-x-5z">
-          {data.map((item) => {
+          {foodData.map((item, i) => {
             return (
-              <li className=" w-64 border p-3 shadow bg-gray-100">
+              <li key={i} className=" w-64 border p-3 shadow bg-gray-100">
                 <div className="font-bold text-xl text-[#2abebe]">
                   {item.item}
                 </div>
