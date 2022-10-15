@@ -3,6 +3,9 @@ import { useEffect } from "react";
 import { Typography } from "@material-tailwind/react";
 import axios from "axios";
 
+import {AzureMap, AzureMapsProvider, IAzureMapOptions} from 'react-azure-maps'
+import {AuthenticationType} from 'azure-maps-control'
+
 const data = [
   {
     item: "vege",
@@ -48,27 +51,44 @@ const data = [
 
 const User = () => {
   const [foodData, setFoodData] = useState([]);
+
   useEffect(() => {
     // API call here
     const getFoods = async () => {
       const foods = await axios
         .get("https://team3api.azurewebsites.net/items/?skip=0&limit=100")
         .then((res) => res.data);
+
+      console.log(foods);
       setFoodData(foods);
     };
 
     getFoods();
   }, []);
 
+  const option = {
+    authOptions: {
+        authType: AuthenticationType.subscriptionKey,
+        subscriptionKey: "// Your subscription key"
+    }
+}
+
   return (
     <>
+      {/* TODO refactor components */}
       <header className="sticky top-0 z-10 text-xl text-[#2f81e4] bg-[#232121] bg-gradient-to-rfrom-white to-[#def0f5] flex border-b p-5 font-bold tracking-tight">
         Food Rangers
       </header>
       <div className="relative p-5">
         <Typography className="px-5" variant="h4" color="gray">
-          List of Free Foods
+          List of Free Foods!
         </Typography>
+        <div style={{height: '300px'}}>
+        <AzureMapsProvider>
+            <AzureMap options={option}>
+            </AzureMap>
+        </AzureMapsProvider>
+    </div>
         <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 list-decimals p-5 space-x-5z">
           {foodData.map((item, i) => {
             return (
